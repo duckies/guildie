@@ -1,0 +1,17 @@
+services:
+  lemonade-db:
+    container_name: lemonade-db
+    restart: unless-stopped
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: lemonade
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+volumes:
+  postgres-data:

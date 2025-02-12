@@ -1,0 +1,13 @@
+{
+  "name": "@lemonade-stand/api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch ./src/index.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lemonade-stand/database": "workspace:*",
+    "hono": "4.7.0"
+  }
+}
