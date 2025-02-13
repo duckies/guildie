@@ -1,0 +1,33 @@
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test:
+        ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-postgres}", "-d", "${POSTGRES_DB:-postgres}"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  postgres-backups:
+    image: eduardolat/pgbackweb:latest
+    ports:
+      - 8085:8085
+    environment:
+      PBW_ENCRYPTION_KEY: "${PBW_ENCRYPTION_KEY}"
+      PBW_POSTGRES_CONN_STRING: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD?error}@postgres:5432/pgbackweb?sslmode=disable"
+      TZ: "America/Los_Angeles"
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  postgres-data:
